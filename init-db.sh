@@ -47,6 +47,7 @@ cat >> "$SQL_FILE" << 'EOF'
 -- Criação de usuários
 DO $$
 BEGIN
+
 EOF
 
 # Processa cada prefixo para criar usuários
@@ -54,7 +55,7 @@ for PREFIXO in $PREFIXOS; do
     USU_NAME=$(get_env_value "${PREFIXO}_USU")
     SEN_NAME=$(get_env_value "${PREFIXO}_SEN")
     BD_NAME=$(get_env_value "${PREFIXO}_BD")
-    
+
     if [ -n "$USU_NAME" ] && [ -n "$SEN_NAME" ]; then
         cat >> "$SQL_FILE" << EOF
     -- Usuário para $PREFIXO
@@ -77,7 +78,7 @@ EOF
 for PREFIXO in $PREFIXOS; do
     BD_NAME=$(get_env_value "${PREFIXO}_BD")
     USU_NAME=$(get_env_value "${PREFIXO}_USU")
-    
+
     if [ -n "$BD_NAME" ] && [ -n "$USU_NAME" ]; then
         cat >> "$SQL_FILE" << EOF
 
@@ -95,7 +96,7 @@ done
 for PREFIXO in $PREFIXOS; do
     BD_NAME=$(get_env_value "${PREFIXO}_BD")
     USU_NAME=$(get_env_value "${PREFIXO}_USU")
-    
+
     if [ -n "$BD_NAME" ] && [ -n "$USU_NAME" ]; then
         cat >> "$SQL_FILE" << EOF
 
@@ -106,6 +107,9 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "$USU_NAME";
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO "$USU_NAME";
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO "$USU_NAME";
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO "$USU_NAME";
+CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+
 EOF
     fi
 done
