@@ -2,7 +2,7 @@ create extension if not exists dblink;
 
 insert
 	into
-	public.organizacao
+	folha_ponto.organizacao
 (id,
 	nome,
 	status,
@@ -22,7 +22,7 @@ from
 
 insert
 	into
-	public.unidade (
+	folha_ponto.unidade (
     id,
 	organizacao_id,
 	nome,
@@ -71,7 +71,7 @@ from
 
 insert
 	into
-	public.convite
+	folha_ponto.convite
 (id,
 	organizacao_id,
 	unidade_id,
@@ -85,11 +85,11 @@ select
 	'33333333-3333-3333-3333-333333333333'::uuid,
 	'11111111-1111-1111-1111-111111111111'::uuid,
 	'11111111-1111-1111-1111-111111111112'::uuid,
-	'PARTICIPANTE', 
+	'PARTICIPANTE',
 	'CONV01',
-	(now() + interval '10 days')::timestamp, 
-	false, 
-	id::varchar, 
+	(now() + interval '10 days')::timestamp,
+	false,
+	id::varchar,
 	now()
 from
 	dblink(
@@ -102,11 +102,11 @@ select
 	'44444444-4444-4444-4444-444444444444'::uuid,
 	'11111111-1111-1111-1111-111111111111'::uuid,
 	'22222222-2222-2222-2222-222222222222'::uuid,
-	'PARTICIPANTE', 
+	'PARTICIPANTE',
 	'CONV02',
-	(now() + interval '10 days')::timestamp, 
-	false, 
-	id::varchar, 
+	(now() + interval '10 days')::timestamp,
+	false,
+	id::varchar,
 	now()
 from
 	dblink(
