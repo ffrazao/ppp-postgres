@@ -41,8 +41,8 @@ select
 	id::varchar,
 	now(),
 	'RAIO',
-	-15.73102,
-	-47.90331,
+	-15.7336157,
+	-47.906275,
 	150,
 	null::jsonb
 from
@@ -59,8 +59,8 @@ select
 	id::varchar,
 	now(),
 	'RAIO',
-	-15.73102,
-	-47.90331,
+	-15.7336157,
+	-47.906275,
 	150,
 	null::jsonb
 from
