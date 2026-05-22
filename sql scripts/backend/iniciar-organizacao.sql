@@ -7,12 +7,16 @@ insert
 	nome,
 	status,
 	criado_por,
-	criado_em)
+	criado_em,
+	atualizado_por,
+	atualizado_em)
 select
-	'11111111-1111-1111-1111-111111111111',
+	'11111111-1111-1111-1111-111111111111'::uuid,
 	'SEAGRI',
 	'ATIVO',
-	id,
+	id::uuid,
+	now(),
+	id::uuid,
 	now()
 from
 	dblink(
@@ -28,6 +32,8 @@ insert
 	nome,
 	criado_por,
 	criado_em,
+	atualizado_por,
+	atualizado_em,
 	tipo_geometria,
 	centro_geo_lat,
 	centro_geo_lng,
@@ -35,10 +41,12 @@ insert
 	poligono_geo
 )
 select
-	'11111111-1111-1111-1111-111111111112'::uuid,
+	1,
 	'11111111-1111-1111-1111-111111111111'::uuid,
 	'DILOG',
-	id::varchar,
+	id::uuid,
+	now(),
+	id::uuid,
 	now(),
 	'RAIO',
 	-15.7336157,
@@ -53,10 +61,12 @@ from
 union all
 
 select
-	'22222222-2222-2222-2222-222222222222'::uuid,
+	2,
 	'11111111-1111-1111-1111-111111111111'::uuid,
 	'GETI',
-	id::varchar,
+	id::uuid,
+	now(),
+	id::uuid,
 	now(),
 	'RAIO',
 	-15.7336157,
@@ -72,24 +82,26 @@ from
 insert
 	into
 	folha_ponto.convite
-(id,
-	organizacao_id,
+(organizacao_id,
 	unidade_id,
 	papel_esperado,
 	codigo,
 	data_expiracao,
 	usado,
 	criado_por,
-	criado_em)
+	criado_em,
+	atualizado_por,
+	atualizado_em)
 select
-	'33333333-3333-3333-3333-333333333333'::uuid,
 	'11111111-1111-1111-1111-111111111111'::uuid,
-	'11111111-1111-1111-1111-111111111112'::uuid,
+	1,
 	'PARTICIPANTE',
 	'CONV01',
 	(now() + interval '10 days')::timestamp,
 	false,
-	id::varchar,
+	id::uuid,
+	now(),
+	id::uuid,
 	now()
 from
 	dblink(
@@ -99,14 +111,15 @@ from
 union all
 
 select
-	'44444444-4444-4444-4444-444444444444'::uuid,
 	'11111111-1111-1111-1111-111111111111'::uuid,
-	'22222222-2222-2222-2222-222222222222'::uuid,
+	2,
 	'PARTICIPANTE',
 	'CONV02',
 	(now() + interval '10 days')::timestamp,
 	false,
-	id::varchar,
+	id::uuid,
+	now(),
+	id::uuid,
 	now()
 from
 	dblink(
