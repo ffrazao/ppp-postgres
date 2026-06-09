@@ -20,7 +20,7 @@ echo "📄 Usando arquivo .env: $ENV_FILE"
 
 # Função para extrair valores do .env (remove aspas e espaços)
 get_env_value() {
-    grep "^$1=" "$ENV_FILE" | tail -1 | cut -d '=' -f2- | sed 's/^["\x27]//; s/["\x27]$//' | xargs
+    grep -F "${1}=" "$ENV_FILE" | tail -1 | cut -d '=' -f2- | sed 's/^["\x27]//; s/["\x27]$//' | xargs
 }
 
 # Encontra todos os prefixos únicos (tudo antes de _BD, _USU ou _SEN)
@@ -60,7 +60,7 @@ for PREFIXO in $PREFIXOS; do
         cat >> "$SQL_FILE" << EOF
     -- Usuário para $PREFIXO
     IF NOT EXISTS (SELECT FROM pg_catalog.pg_roles WHERE rolname = '$USU_NAME') THEN
-        CREATE USER "$USU_NAME" WITH PASSWORD '$SEN_NAME';
+        CREATE USER "$USU_NAME" WITH LOGIN PASSWORD '$SEN_NAME';
         RAISE NOTICE '✓ Usuário $USU_NAME criado';
     ELSE
         RAISE NOTICE 'ℹ Usuário $USU_NAME já existe';
@@ -82,9 +82,12 @@ for PREFIXO in $PREFIXOS; do
     if [ -n "$BD_NAME" ] && [ -n "$USU_NAME" ]; then
         cat >> "$SQL_FILE" << EOF
 
+
 -- Banco para $PREFIXO
-SELECT 'CREATE DATABASE "$BD_NAME"'
-WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = '$BD_NAME')\gexec
+SELECT 'CREATE DATABASE "$BD_NAME" LOCALE_PROVIDER icu ICU_LOCALE ''pt-BR'' ENCODING ''UTF8'' TEMPLATE template0'
+WHERE NOT EXISTS (
+    SELECT FROM pg_database WHERE datname = '$BD_NAME'
+)\gexec
 
 -- Conceder privilégios no banco
 GRANT ALL PRIVILEGES ON DATABASE "$BD_NAME" TO "$USU_NAME";
@@ -107,8 +110,11 @@ GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public TO "$USU_NAME";
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON TABLES TO "$USU_NAME";
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON SEQUENCES TO "$USU_NAME";
 ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON FUNCTIONS TO "$USU_NAME";
-CREATE EXTENSION IF NOT EXISTS postgis WITH SCHEMA public;
-CREATE EXTENSION IF NOT EXISTS pgcrypto WITH SCHEMA public;
+CREATE EXTENSION IF NOT EXISTS postgis;
+CREATE EXTENSION IF NOT EXISTS postgis_topology;
+CREATE EXTENSION IF NOT EXISTS fuzzystrmatch;
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+CREATE EXTENSION IF NOT EXISTS unaccent;
 
 EOF
     fi
